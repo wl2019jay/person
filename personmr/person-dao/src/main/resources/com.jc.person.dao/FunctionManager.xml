@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jc.person.dao.FunctionManager">
+    <insert id="addFunction" parameterType="com.jc.person.module.Function">
+            INSERT INTO person.t_function (
+                function_code,
+                function_name,
+                function_url,
+                parent_Id,
+                enable_flag,
+                create_by,
+                create_date,
+                last_update_by,
+                last_update_date
+            )
+            VALUES
+                (   #{functionCode,jdbcType=VARCHAR},
+                    #{functionName,jdbcType=VARCHAR},
+                    #{functionUrl,jdbcType=VARCHAR},
+                    #{parentId,jdbcType=CLOB},
+                    #{enableFlag,jdbcType=VARCHAR},
+                    null,
+                    NULL,
+                    null,
+                    NULL
+                )
+    </insert>
+
+   
+    <insert id="addRoleFuction" parameterType="com.jc.person.module.RoleFunctionRef">
+            INSERT INTO person.t_role_function (
+                function_id,
+                role_id,
+                create_by,
+                create_date,
+                last_update_by,
+                last_update_date
+            )
+            VALUES
+                (   #{functionId,jdbcType=CLOB},
+                    #{roleId,jdbcType=CLOB},
+                    null,
+                    NULL,
+                    null,
+                    NULL
+                )
+    </insert>
+	
+	<insert id="addRoleFuctionBatch" parameterType="list">
+	   INSERT INTO person.t_role_function (
+                function_id,
+                role_id,
+                create_by,
+                create_date,
+                last_update_by,
+                last_update_date
+            )
+        VALUES
+       <foreach collection="list" index="index" item="item" separator=",">
+               (   #{item.functionId,jdbcType=CLOB},
+                    #{item.roleId,jdbcType=CLOB},
+                    null,
+                    NULL,
+                    null,
+                    NULL
+                )
+       </foreach>
+	</insert>
+	
+	
+	<resultMap type="com.jc.person.vo.FunctionTree" id="functionTreeModel">
+	     <id column="pid" property="pid" />
+		 <result column="function_code" property="functionCode" />
+		 <result column="function_name" property="functionName" />
+		 <result column="function_url"  property="functionUrl" />
+         <result column="parent_id" property="parentId"/>
+         <result column="enable_flag" property="enableFlag"/>
+		 <collection property="children"  select="queryFunctionSubTree" column="pid" >
+		 </collection>
+	</resultMap> 
+	
+	<select  id="queryFunctionTree" resultMap="functionTreeModel">
+	     select 
+		     pid,
+			 function_code,
+			 function_name,
+			 function_url,
+			 parent_id,
+			 enable_flag
+		   from t_function 
+		   where parent_id is null
+	</select>
+
+    <select  id="queryRoleFunction"  parameterType="int" >
+
+    </select>
+	
+	<select  id="queryFunctionSubTree" resultMap="functionTreeModel">
+	     select 
+		     pid,
+			 function_code,
+			 function_name,
+			 function_url,
+			 parent_id,
+			 enable_flag
+		   from t_function 
+		   where parent_id =#{pid}
+	</select>
+	
+	
+
+    <update id="updateFunction" parameterType="com.jc.person.module.Function">
+          update t_function s
+            set s.function_code =#{functionCode,jdbcType=VARCHAR},
+            s.function_name=#{functionName,jdbcType=VARCHAR},
+            s.function_url=#{functionUrl,jdbcType=VARCHAR},
+            s.parent_id=#{parentId,jdbcType=VARCHAR},
+            s.enable_flag=#{enableFlag,jdbcType=VARCHAR }
+            where s.pid=#{pid,jdbcType=INTEGER}
+
+    </update>
+
+    <update id="deleteFunction" parameterType="int">
+          delete from t_function where pid=#{pid,jdbcType=INTEGER}
+
+    </update>
+     <update id="deleteRoleFunction" parameterType="int">
+          delete from t_role_function where role_id=#{roleId,jdbcType=INTEGER}
+
+    </update>
+    
+    <select id="queryFunctionById" resultType="com.jc.person.module.Function">
+          select
+		     pid,
+			 function_code as functionCode,
+			 function_name as functionName,
+			 function_url as functionUrl,
+			 parent_id as parentId,
+			 enable_flag enableFlag
+		   from t_function
+		   where pid=#{functionId,jdbcType=INTEGER}
+    </select>
+   
+</mapper>

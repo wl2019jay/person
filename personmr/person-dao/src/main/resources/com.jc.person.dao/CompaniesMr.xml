@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jc.person.dao.CompaniesMr">
+    <insert id="addCompanies" parameterType="com.jc.person.module.Companies">
+            INSERT INTO person.t_companies (
+                company_code,
+                company_name,
+                company_desc,
+                image,
+                addrees,
+                tell_phone,
+                cost_mode_id,
+                create_by,
+                create_date,
+                last_update_by,
+                last_update_date
+            )
+            VALUES
+                (   #{companyCode,jdbcType=VARCHAR},
+                    #{companyName,jdbcType=VARCHAR},
+                    #{companyDesc,jdbcType=VARCHAR},
+                    #{image,jdbcType=CLOB},
+                    #{address,jdbcType=VARCHAR},
+                    #{tellPhone,jdbcType=VARCHAR},
+                    #{ostModeId,jdbcType=INTEGER},
+                    null,
+                    NULL,
+                    null,
+                    NULL
+                )
+    </insert>
+
+
+
+    <update id="updateCompanies" parameterType="com.jc.person.module.Companies">
+          update t_companies s
+            set s.company_code =#{companyCode,jdbcType=VARCHAR},
+            s.company_name=#{companyName,jdbcType=VARCHAR},
+            s.company_desc=#{companyDesc,jdbcType=VARCHAR},
+            s.image=#{image,jdbcType=CLOB},
+            s.addrees= #{address,jdbcType=VARCHAR},
+            s.tell_phone= #{tellPhone,jdbcType=VARCHAR},
+            s.cost_mode_id= #{tellPhone,jdbcType=INTEGER}
+            where s.pid=#{pid,jdbcType=INTEGER}
+
+    </update>
+
+    <select id="queryById" parameterType="int" resultType="com.jc.person.module.Companies">
+        SELECT
+            t.pid,
+            t.company_code AS companyCode,
+            t.company_name AS companyName,
+            t.company_desc AS companyDesc,
+            t.image,
+            t.addrees,
+            t.tell_phone AS tellPhone,
+            t.cost_mode_id AS ostModeId,
+            t.create_by AS createBy,
+            t.create_date AS createDate,
+            t.last_update_by AS lastUpdateBy,
+            t.last_update_date AS lastUpdateDate
+        FROM
+            t_companies AS t
+        WHERE
+            t.pid = #{pid,jdbcType=INTEGER}
+    </select>
+
+    <select id="queryCount" parameterType="com.jc.person.vo.CompaniesVO" resultType="int">
+        select count(1) as countALl from t_companies
+    </select>
+
+    <select id="queryCompanies" parameterType="com.jc.person.vo.CompaniesVO" resultType="com.jc.person.module.Companies">
+        SELECT
+            t.pid,
+            t.company_code AS companyCode,
+            t.company_name AS companyName,
+            t.company_desc AS companyDesc,
+            t.image,
+            t.addrees,
+            t.tell_phone AS tellPhone,
+            t.cost_mode_id AS ostModeId,
+            t.create_by AS createBy,
+            t.create_date AS createDate,
+            t.last_update_by AS lastUpdateBy,
+            t.last_update_date AS lastUpdateDate
+        FROM
+            t_companies AS t
+
+    </select>
+
+    <delete id="deleteCompanies" parameterType="int" >
+        delete from t_companies s where s.pid=#{pid ,jdbcType=INTEGER}
+    </delete>
+</mapper>

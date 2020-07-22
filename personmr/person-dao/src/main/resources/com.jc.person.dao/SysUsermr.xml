@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jc.person.dao.SysUsermr">
+    <insert id="addUser" parameterType="com.jc.person.module.SysUser" >
+       INSERT INTO person.sys_user (
+                    user_name,
+                    password,
+                    phone,
+                    email,
+                    remark,
+                    tip,
+                    create_by,
+                    create_date,
+                    last_update_by,
+                    last_update_date
+                )
+                VALUES
+                    (
+                        #{userName,jdbcType=VARCHAR},
+                        #{password,jdbcType=VARCHAR},
+                        #{phone,jdbcType=VARCHAR},
+                        #{email,jdbcType=VARCHAR},
+                        #{remark,jdbcType=VARCHAR},
+                        #{tip,jdbcType=VARCHAR},
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL
+                    )
+    </insert>
+
+    <insert
+            id="addUserBatch" parameterType="list">
+        INSERT INTO person.sys_user (
+                user_name,
+                password,
+                phone,
+                email,
+                remark,
+                tip,
+                create_by,
+                create_date,
+                last_update_by,
+                last_update_date
+                )
+        VALUES
+       <foreach collection="list" index="index" item="item" separator=",">
+           (
+               #{item.userName,jdbcType=VARCHAR},
+               #{item.password,jdbcType=VARCHAR},
+               #{item.phone,jdbcType=VARCHAR},
+               #{item.email,jdbcType=VARCHAR},
+               #{item.remark,jdbcType=VARCHAR},
+               #{item.tip,jdbcType=VARCHAR},
+               NULL,
+               NULL,
+               NULL,
+               NULL
+           )
+       </foreach>
+    </insert>
+
+    <update id="updateUserBatch" parameterType="list">
+        <foreach collection="list" item="user" separator=";">
+            update sys_user s
+             set s.user_name =#{user.userName,jdbcType=VARCHAR},
+                 s.phone=#{user.phone,jdbcType=VARCHAR},
+                 s.email=#{user.email,jdbcType=VARCHAR},
+                 s.remark=#{user.remark,jdbcType=VARCHAR},
+                 s.tip= #{user.tip,jdbcType=VARCHAR}
+            where s.pid=#{user.pid,jdbcType=INTEGER}
+        </foreach>
+    </update>
+
+    <select id="queryUserByid" parameterType="int" resultType="com.jc.person.module.SysUser">
+        SELECT
+            s.pid,
+            s.user_name AS userName,
+            s.`password` AS `password`,
+            s.phone,
+            s.email,
+            s.remark,
+            s.tip,
+            s.create_by AS createBy,
+            s.create_date AS createDate,
+            s.last_update_by AS lastUpdateBy,
+            s.last_update_date AS lastUpdateDate
+        FROM
+            sys_user  s
+        WHERE
+            pid = #{pid,jdbcType=INTEGER}
+    </select>
+
+    <update id="updateUserPassword" parameterType="String">
+        update sys_user s
+        set s.password=#{newPassword,jdbcType=VARCHAR}
+        WHERE
+         s.user_name=#{user_name,jdbcType=VARCHAR}
+        AND s.password=#{oldPassword,jdbcType=VARCHAR}
+    </update>
+
+    <select id="querUsers" parameterType="com.jc.person.module.SysUser" resultType="com.jc.person.module.SysUser">
+        SELECT
+            s.pid,
+            s.user_name AS userName,
+            s.`password` AS `password`,
+            s.phone,
+            s.email,
+            s.remark,
+            s.tip,
+            s.create_by AS createBy,
+            s.create_date AS createDate,
+            s.last_update_by AS lastUpdateBy,
+            s.last_update_date AS lastUpdateDate
+        FROM
+            sys_user  s
+    </select>
+
+    <delete id="deleteUser" parameterType="int" >
+        delete from sys_user s where s.pid=#{pid ,jdbcType=INTEGER}
+    </delete>
+</mapper>

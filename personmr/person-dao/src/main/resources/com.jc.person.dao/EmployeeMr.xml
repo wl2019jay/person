@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jc.person.dao.EmployeeMr">
+    <insert id="addEmployees" parameterType="com.jc.person.module.Employees">
+            INSERT INTO person.t_employees (
+                employee_code,
+                name,
+                phone,
+                email,
+                sex,
+                city_id_1,
+                address_detail,
+                enable_flag,
+                create_by,
+                create_date,
+                last_update_by,
+                last_update_date
+            )
+            VALUES
+                (   #{employeeCode,jdbcType=VARCHAR},
+                    #{name,jdbcType=VARCHAR},
+                    #{phone,jdbcType=VARCHAR},
+                    #{email,jdbcType=CLOB},
+                    #{sex,jdbcType=VARCHAR},
+                    #{cityId,jdbcType=INTEGER},
+                    #{address,jdbcType=VARCHAR},
+                    'Y',
+                    null,
+                    NULL,
+                    null,
+                    NULL
+                )
+    </insert>
+
+    <insert id="addEmployeesIdCard" parameterType="com.jc.person.module.EmployeeIdCard">
+            INSERT INTO person.t_employee_idcard (
+                front_image,
+                back_image,
+                employee_id,
+                Name,
+                sex,
+                nation,
+                birth,
+                address,
+                idnum,
+                ValidDate,
+                create_by,
+                create_date,
+                last_update_by,
+                last_update_date
+            )
+            VALUES
+                (   #{frontImage,jdbcType=CLOB},
+                    #{backImage,jdbcType=CLOB},
+                    #{employeeId,jdbcType=VARCHAR},
+                    #{name,jdbcType=VARCHAR},
+                    #{sex,jdbcType=VARCHAR},
+                    #{birth,jdbcType=INTEGER},
+                    #{address,jdbcType=VARCHAR},
+                   #{idnum,jdbcType=VARCHAR},
+                    #{validDate,jdbcType=VARCHAR},
+                    null,
+                    NULL,
+                    null,
+                    NULL
+                )
+    </insert>
+    <insert id="addEmployeesRef" parameterType="com.jc.person.module.EmployeesEconomicmanRef">
+            INSERT INTO person.t_employees_economicman_ref (
+                employees_id,
+                economic_man_id,
+                recommend_date,
+                create_by,
+                create_date,
+                last_update_by,
+                last_update_date
+            )
+            VALUES
+                (   #{employeeId,jdbcType=CLOB},
+                    #{economicManId,jdbcType=CLOB},
+                    #{recommendDate,jdbcType=VARCHAR},
+                    null,
+                    NULL,
+                    null,
+                    NULL
+                )
+    </insert>
+
+    <update id="updateEmployees" parameterType="com.jc.person.module.Employees">
+          update t_employees s
+            set s.employee_code =#{employeeCode,jdbcType=VARCHAR},
+            s.name=#{name,jdbcType=VARCHAR},
+            s.phone=#{phone,jdbcType=VARCHAR},
+            s.email=#{email,jdbcType=VARCHAR},
+            s.sex= #{sex,jdbcType=VARCHAR},
+            s.city_id_1= #{cityId,jdbcType=VARCHAR},
+            s.address_detail= #{address,jdbcType=INTEGER}
+            where s.employee_id=#{pid,jdbcType=INTEGER}
+
+    </update>
+
+    <update id="updateEmployeesIdCard" parameterType="com.jc.person.module.EmployeeIdCard">
+          update t_employee_idcard s
+            set s.front_image =#{frontImage,jdbcType=CLOB},
+            s.back_image=#{backImage,jdbcType=CLOB},
+            s.Name=#{name,jdbcType=VARCHAR},
+            s.sex=#{sex,jdbcType=VARCHAR},
+            s.nation= #{nation,jdbcType=VARCHAR},
+            s.birth= #{birth,jdbcType=VARCHAR},
+            s.address= #{address,jdbcType=INTEGER},
+            s.idnum= #{idNum,jdbcType=INTEGER}
+            where s.pid=#{pid,jdbcType=INTEGER}
+
+    </update>
+
+    <update id="updateEmployeesRef" parameterType="com.jc.person.module.EmployeesEconomicmanRef">
+          update t_employees_economicman_ref s
+            set s.economic_man_id =#{frontImage,jdbcType=CLOB},
+            s.recommend_date=#{backImage,jdbcType=CLOB}
+            where s.pid=#{pid,jdbcType=INTEGER}
+
+    </update>
+
+    <select id="queryByid" parameterType="int" resultType="com.jc.person.module.Employees">
+
+    </select>
+
+    <select id="queryCount" parameterType="com.jc.person.vo.CompaniesVO" resultType="int">
+        select count(1) as countALl from t_employees
+    </select>
+
+    <select id="queryAll" parameterType="com.jc.person.vo.EmployeesVO" resultType="com.jc.person.module.Employees">
+        SELECT
+            t.employee_id pid,
+            t.employee_code employeeCode,
+            t. NAME,
+            t.phone,
+            t.email,
+            t.sex,
+            (
+                SELECT
+                    c.cityname
+                FROM
+                    t_city c
+                WHERE
+                    c.id = t.city_id_1
+            ) AS cityName,
+            t.address_detail address,
+            (
+                SELECT
+                    i.idnum
+                FROM
+                    t_employee_idcard i
+                WHERE
+                    i.employee_id = t.employee_id
+            ) AS idNum,
+            t.enable_flag enableFlag,
+            t.create_by createBy,
+            t.create_date createDate,
+            t.last_update_by lastUpdateBy,
+            t.last_update_date lastUpdateDate
+        FROM
+            t_employees AS t
+
+    </select>
+
+    <delete id="deleteEmployees" parameterType="int" >
+        delete from t_employees s where s.employee_id=#{pid ,jdbcType=INTEGER}
+    </delete>
+</mapper>

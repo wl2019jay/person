@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jc.person.dao.RoleManager">
+    <insert id="addRoles" parameterType="com.jc.person.module.Role">
+            INSERT INTO person.t_role (
+                role_code,
+                role_name,
+                start_time,
+                end_time,
+                enable_flag,
+                create_by,
+                create_date,
+                last_update_by,
+                last_update_date
+            )
+            VALUES
+                (   #{roleCode,jdbcType=VARCHAR},
+                    #{roleName,jdbcType=VARCHAR},
+                    #{startTime,jdbcType=VARCHAR},
+                    #{endTime,jdbcType=VARCHAR},
+                    #{enableFlag,jdbcType=VARCHAR},
+                    null,
+                    NULL,
+                    null,
+                    NULL
+                )
+    </insert>
+
+   
+    <insert id="addUserRole" parameterType="com.jc.person.module.UserRoleRef">
+            INSERT INTO person.t_user_role (
+                user_id,
+                role_id,
+				start_time,
+                end_time,
+                create_by,
+                create_date,
+                last_update_by,
+                last_update_date
+            )
+            VALUES
+                (   #{userId,jdbcType=VARCHAR},
+                    #{roleId,jdbcType=VARCHAR},
+					#{startTime,jdbcType=VARCHAR},
+                    #{endTime,jdbcType=VARCHAR}
+                    null,
+                    NULL,
+                    null,
+                    NULL
+                )
+    </insert>
+	
+	
+
+    <update id="updateRoleRef" parameterType="com.jc.person.module.UserRoleRef">
+          update t_user_role s
+            set s.user_Id =#{userId,jdbcType=VARCHAR},
+            s.role_Id=#{roleId,jdbcType=VARCHAR},
+            s.start_Time=#{startTime,jdbcType=VARCHAR},
+            s.end_Time=#{endTime,jdbcType=VARCHAR}
+            where s.pid=#{pid,jdbcType=INTEGER}
+
+    </update>
+	
+	
+    <update id="updateRole" parameterType="com.jc.person.module.Role">
+          update t_role s
+            set s.role_code =#{roleCode,jdbcType=VARCHAR},
+            s.role_Name=#{roleName,jdbcType=VARCHAR},
+            s.start_Time=#{startTime,jdbcType=VARCHAR},
+            s.end_Time=#{endTime,jdbcType=VARCHAR},
+            s.enable_flag=#{enableFlag ,jdbcType=VARCHAR}
+            where s.pid=#{pid,jdbcType=INTEGER}
+
+    </update>
+
+    <update id="deleteUserRoleRef" parameterType="int">
+          delete from t_user_role where pid=#{pid,jdbcType=INTEGER}
+
+    </update>
+     <update id="deleteRole" parameterType="int">
+          delete from t_role where pid=#{pid,jdbcType=INTEGER}
+
+    </update>
+	
+	<select id ="queryAll" parameterType="com.jc.person.module.Role" resultType="com.jc.person.module.Role">
+	     select role_code as roleCode,
+		        role_name as roleName,
+				start_time as startTime ,
+				end_time  as endTime ,
+				enable_flag as enableFlag,
+				pid
+		 from t_role
+	</select>
+	
+	<select id="queryCount"  parameterType="com.jc.person.module.Role">
+	
+	     select count(1) as num from t_role
+	</select>
+   
+</mapper>
